@@ -1,0 +1,39 @@
+# -*- fill-column: 76; -*-
+#+TITLE: XDP Hands-On Tutorial
+#+OPTIONS: ^:nil
+
+* Pre-steps
+
+mount -t bpf bpf /sys/fs/bpf/
+cd common
+make
+
+
+* Compile kernel module
+clang -O2 -g -Wall -target bpf -c xdp_prog_kern_03.c -o xdp_prog_kern_03.o
+
+
+* Compile xdp loader
+
+gcc xdp_loader.c -o xdp_loader common/common_params.o common/common_user_bpf_xdp.o -lbpf
+
+
+* Load Kernel module: xdp_redirect_map function
+
+sudo ./xdp_loader -d NIC_TO_BE_ATTACHED_TO -S --filename xdp_prog_kern_03.o --progsec xdp_redirect_map
+
+
+* Compile xdp_prog_user
+
+gcc xdp_prog_user.c -o xdp_prog_user common/common_params.o common/common_user_bpf_xdp.o -lbpf
+
+
+* Add entries to the map
+
+Add information needed by the kernel side into the map. It stores a destination IP and MAC.
+In the next example, the outcome will be that when the traffic enters on enp2s0 and it is
+targeting 172.24.100.139, the traffic should be redirected to br-ex device, and the destination
+mac should be replaced with fa:16:3e:73:21:74
+
+sudo ./xdp_prog_user -d enp2s0 -r br-ex --dest-mac fa:16:3e:73:21:74 --dest-ip 172.24.100.139
+

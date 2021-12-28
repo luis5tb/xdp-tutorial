@@ -8,7 +8,6 @@
 #include <bpf/libbpf.h>
 
 #include <linux/if_link.h> /* Need XDP flags */
-#include <linux/err.h>
 
 #include "common_defines.h"
 
@@ -127,6 +126,20 @@ struct bpf_object *load_bpf_object_file(const char *filename, int ifindex)
 
 	/* Notice how a pointer to a libbpf bpf_object is returned */
 	return obj;
+}
+
+#define MAX_ERRNO       4095
+
+#define IS_ERR_VALUE(x) ((x) >= (unsigned long)-MAX_ERRNO)
+
+static inline long PTR_ERR(const void *ptr)
+{
+		return (long) ptr;
+}
+
+static inline bool IS_ERR_OR_NULL(const void *ptr)
+{
+		return (!ptr) || IS_ERR_VALUE((unsigned long)ptr);
 }
 
 static struct bpf_object *open_bpf_object(const char *file, int ifindex)

@@ -168,9 +168,9 @@ void parse_cmdline_args(int argc, char **argv,
 			dest  = (char *)&cfg->progsec;
 			strncpy(dest, optarg, sizeof(cfg->progsec));
 			break;
-		case 'L': /* --src-mac */
-			dest  = (char *)&cfg->src_mac;
-			strncpy(dest, optarg, sizeof(cfg->src_mac));
+		case 'L': /* --dest-ip */
+			dest  = (char *)&cfg->dest_ip;
+			strncpy(dest, optarg, sizeof(cfg->dest_ip));
 			break;
 		case 'R': /* --dest-mac */
 			dest  = (char *)&cfg->dest_mac;

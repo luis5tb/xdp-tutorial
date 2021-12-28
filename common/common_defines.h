@@ -5,6 +5,10 @@
 #include <linux/types.h>
 #include <stdbool.h>
 
+#include <linux/ip.h>
+#include <netinet/in.h>
+
+
 struct config {
 	__u32 xdp_flags;
 	int ifindex;
@@ -18,7 +22,7 @@ struct config {
 	char pin_dir[512];
 	char filename[512];
 	char progsec[32];
-	char src_mac[18];
+	char dest_ip[INET_ADDRSTRLEN];
 	char dest_mac[18];
 	__u16 xsk_bind_flags;
 	int xsk_if_queue;
